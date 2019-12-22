@@ -47,20 +47,20 @@ college_codes = {
     'YRK01': 'York College'
 }
 
-INSTANCE_ABS_PATH = "/home/fa18/313/adeh6562/public_html/grade-notifier/instances.txt"
+INSTANCE_ABS_PATH = "/var/www/GN-Core/instances.txt"
 
-INSTANCE_ABS_PATH_TEST = "/home/fa18/313/adeh6562/public_html/grade-notifier" \
+INSTANCE_ABS_PATH_TEST = "/var/www/GN-Core" \
     + "/test-instances.txt"
 
 INSTANCE_ABS_PATH_DEV = "./instances.txt"
 
-SCRIPT_PATH = "/home/fa18/313/adeh6562/public_html/grade-notifier/Grade-Notifier/src/core"
+SCRIPT_PATH = "/var/www/GN-Core/src/core"
 SCRIPT_PATH_DEV = "./src/core"
 
 CUNY_FIRST_HOME_URL = "https://home.cunyfirst.cuny.edu"
 CUNY_FIRST_AUTH_SUBMIT_URL = "https://ssologin.cuny.edu/oam/server/auth_cred_submit"
 
-REPO_ABS_DIRECTORY_PATH = "/home/fa18/313/adeh6562/public_html/grade-notifier/Grade-Notifier"
+REPO_ABS_DIRECTORY_PATH = "/var/www/GN-Core"
 
 CUNY_FIRST_STUDENT_CENTER_URL = "https://hrsa.cunyfirst.cuny.edu/psc/cnyhcprd/EMPLOYEE" \
     + "/HRMS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?FolderPath" \
@@ -105,7 +105,7 @@ ALREADY_IN_SESSION = "This username already has an instance running. " \
 
 SESSION_ENDED_TEXT = "Your session has ended. " \
     + "If you'd like to continue using Grade-Notifier please sign back in at "\
-    + "https://venus.cs.qc.cuny.edu/~adeh6562/index.php"
+    + "https://cunygradenotifier.com"
 
 CUNY_FIRST_HOME_URL_TEST = 'https://home.cunyfirst.cuny.edu/psp/cnyepprd/EMPLOYEE/EMPL/h/?tab=DEFAULT'
 CUNY_FIRST_LOGOUT_URL = 'https://home.cunyfirst.cuny.edu/psp/cnyepprd/EMPLOYEE/EMPL/?cmd=logout'
@@ -113,7 +113,7 @@ CUNY_FIRST_LOGOUT_2_URL = 'https://home.cunyfirst.cuny.edu/sso/logout?end_url=ht
 CUNY_FIRST_LOGOUT_3_URL = 'https://ssologin.cuny.edu/oamsso-bin/logout.pl?end_url=https%3A' \
     + '%2F%2Fhome.cunyfirst.cuny.edu'
 
-LOG_PATH = "/home/fa18/313/adeh6562/public_html/grade-notifier/logs"
+LOG_PATH = "/var/www/GN-Core/logs"
 LOG_PATH_DEV = "./logs"
 
 
@@ -122,7 +122,7 @@ def abs_repo_path():
     return REPO_ABS_DIRECTORY_PATH
 
 def is_local():
-    return not ((socket.gethostname() == 'mars' or socket.gethostname() == 'venus'))
+    return not ((socket.gethostname() == 'GradeNotifier'))
 
 def log_path():
     if is_local():

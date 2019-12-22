@@ -8,19 +8,20 @@
     function display(){
         global $arr, $status, $title, $message;
         $cmd = '';
-        if (gethostname() == "venus" || gethostname() == "mars") {
+	//echo gethostname();
+        if (gethostname()=='GradeNotifier') {
             require_once 'vendor/autoload.php';
             $dotenv = Dotenv\Dotenv::create(__DIR__);
             $dotenv->load();
-            $account_pass = getenv('ACCOUNT_PASSWORD');
-            $mars_user = getenv('MARS_USERNAME');
-            $cmd = 'echo "'.$account_pass.'" | su -c "python3 /home/fa18/313/'.$mars_user.'/public_html/grade-notifier/Grade-Notifier/src/core/initializegn.py --username='.$_POST["username"].' --password='.$_POST["password"].' --school='.$_POST["school"].' --phone='.$_POST["phone"].' --prod=true" - '.$mars_user;
-
+            $account_pass = "BecauseSecurityReasons>:(";//getenv('ACCOUNT_PASSWORD');
+            //$mars_user = getenv('MARS_USERNAME');
+            $cmd = 'python3 /var/www/GN-Core/src/core/initializegn.py --username='.escapeshellcmd($_POST["username"]).' --password='.escapeshellcmd($_POST["password"]).' --school='.escapeshellcmd($_POST["school"]).' --phone='.escapeshellcmd($_POST["phone"]).' --prod=true';
+	    // echo '<!--'.$cmd.'-->';
         } else {
             echo nl2br("********************\r\nRunning Local....\r\n********************\r\n");
             $cmd = 'python3 src/core/initializegn.py --username='.$_POST["username"].' --password='.$_POST["password"].' --school='.$_POST["school"].' --phone='.$_POST["phone"];
         }
-
+	//echo '<!--'.$cmd.'-->';
         $message = exec($cmd, $arr);
 
         for ($x = 0; $x < count($arr); $x++) {
@@ -70,12 +71,12 @@
 <html>
 <head>
 <?php
-    if (gethostname() == "venus" || gethostname() == "mars") {
+    if (gethostname() == "GradeNotifier") {
         require_once 'vendor/autoload.php';
         $dotenv = Dotenv\Dotenv::create(__DIR__);
         $dotenv->load();
-        $mars_user = getenv('MARS_USERNAME');
-        echo '<base href="/~'.$mars_user.'/grade-notifier/Grade-Notifier/">';
+        //$mars_user = getenv('MARS_USERNAME');
+        echo '<base href="/">';
     }
 ?>
 <meta charset="UTF-8">
@@ -199,11 +200,13 @@ Get a text when you<br>get your grades!
 <?php
     endif;
     endif;
+echo "<!--Currently serving ".count(file("instances.txt"))." users!-->";
     ?>
 
 <div class="credits">
 <h3 class="credit">Made with ❤️  by Ehud Adler</h3>
 <h4 class="credit">Big thanks to @ericshermancs</h4>
+<h4 class="credit">And huge thanks to our server guy @sommerbenjamin</h4>
 <h4 class="credit">Please see our <a href="https://github.com/Grade-Notifier/GN-Core/blob/master/CONTRIBUTORS.md" title="Contributors">full list of contributors</a>.</h4>
 </div>
 </div>

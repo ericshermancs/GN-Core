@@ -65,6 +65,6 @@ class RedactedFile:
 
 def redact_text(text, redacted_list):
     for word in redacted_list:
-        text = re.sub(word, "REDACTED", text)
+        text = re.sub(re.escape(word), "REDACTED", text)
     return text
     

@@ -19,6 +19,7 @@ import os
 import re
 import requests
 import getpass
+import signal
 import subprocess
 import cunyfirstapi
 from helper import constants
@@ -51,7 +52,11 @@ load_dotenv(dotenv_path)
 # Accessing variables.
 account_pass = os.getenv('ACCOUNT_PASSWORD')
 
+def preexec_function():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
 def run(username, password, school, phone):
+    #print(username, password, school, phone)
     log_path = '{0}/{1}{2}'.format(
         constants.log_path(), username, time.time())
     create_dir(constants.log_path())
@@ -68,6 +73,7 @@ def run(username, password, school, phone):
                              stderr=outfile)
     else:
         with open("{0}.txt".format(log_path), "w+") as outfile:
+            #outfile = open("{0}.txt".format(log_path), "w+")
             subprocess.Popen(
                 [
                     "nohup",
@@ -79,9 +85,16 @@ def run(username, password, school, phone):
                     f"--school={school}",
                     f"--phone={phone}",
                     "--prod=true"],
-                stdout=outfile,
-                stderr=outfile)
-
+                    #f"&> {log_path}.txt"],
+                    #"--prod=true"],
+                    stdout=outfile,
+                    stderr=outfile,
+            )
+        '''
+        os.system((f'nohup setsid python3 {constants.script_path()}/grade_notifier.py --username={username}'
+        f' --password="{password}" --school={school} --phone={phone} --prod=true &> {log_path}.txt & disown'))
+        '''
+        # time.sleep(60)
 def check_user_exists(username, state):
     stored_username = custom_hash(username)
     file_path = instance_path(state)

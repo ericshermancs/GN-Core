@@ -195,9 +195,13 @@ def sign_in(remaining_attempts=5):
         return False
 
 def create_instance():
+    print('[DEBUG] Creating instance...')
     sign_in(2)
     if api.is_logged_in():
+        print('[DEBUG] LOGGED IN')
         start_notifier(True)
+    else:
+        print('[ERROR] COULD NOT LOG IN')
 
 def parse_grades_to_class(raw_grades):
     results = []
@@ -253,13 +257,14 @@ def refresh(remaining_attempts=2):
             raw_results = raw_grades['results']
             result = parse_grades_to_class(raw_results)
             return RefreshResult(
-            result, 
+            result,
             GPA(
                 raw_grades['term_gpa'], 
                 raw_grades['cumulative_gpa']
             )
         )  
         except ValueError:
+            traceback.print_exc()
             print("Value Error")
             refresh(remaining_attempts - 1)
     else:
@@ -275,8 +280,11 @@ def refresh(remaining_attempts=2):
             refresh(remaining_attempts - 1)
 
 def start_notifier(is_welcome=False):
+    print('[DEBUG] Starting notifier...')
     old_result = RefreshResult([], -1)
+    result = None
     while datetime.datetime.now() < endtime:
+        print(f'Beginning iteration at {datetime.datetime.now()}')
         try:
             result = refresh()
         except TypeError:
@@ -285,6 +293,7 @@ def start_notifier(is_welcome=False):
             # Note this will not affect counter
             continue
         except ValueError:
+            traceback.print_exc()
             print('[DEBUG] (ValueError, start_notifier) Trying again...')
             # send message asking for more info to help us?
             pass
@@ -297,10 +306,13 @@ def start_notifier(is_welcome=False):
             old_result = result
             is_welcome = False
         time.sleep(30 * 60)  # 30 min intervals
+    print('[DEBUG] ENDING ITERATIONS')
 
 
 def check_user_exists(username):
     stored_username = custom_hash(username)
+    # print('HI')
+    # print(stored_username)
     file_path = instance_path(state)
     open(file_path, 'a').close()
     with open(file_path, 'r+') as file:
@@ -392,15 +404,19 @@ def main():
         number = input(
             "Enter phone number: ") if not args.phone else args.phone
 
+        print('redactions to start')
         ## Monkey Patching stdout to remove any sens. data
+        #password = password[1:-1]
+        #print(password)
         redacted_list = [username, password]
         redacted_print_std = RedactedPrint(STDOutOptions.STDOUT, redacted_list)
         redacted_print_err = RedactedPrint(STDOutOptions.ERROR, redacted_list)
         redacted_print_std.enable()
         redacted_print_err.enable()
-
+        print('redactions beginning')
         if add_new_user_instance(username):
             endtime = datetime.datetime.now() + datetime.timedelta(days=14)
+            print(f'ending at {endtime}')
             api = CUNYFirstAPI(username, password, args.school.upper())
             user = User(username, password, number, args.school.upper())
             atexit.register(exit_handler)
@@ -408,7 +424,7 @@ def main():
         else:
             print(already_in_session_message())
 
-    except Exception as e:
+    except:
         print("ERROR")
         traceback.print_exc()
         # adding comment bc cant push
