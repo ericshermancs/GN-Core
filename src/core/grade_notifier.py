@@ -54,7 +54,8 @@ load_dotenv(dotenv_path)
 # Accessing variables.
 account_sid = os.getenv('TWILIO_SID')
 auth_token = os.getenv('TWILIO_AUTH_TOKEN')
-
+DB_USERNAME = os.getenv('LOCALHOST_USERNAME')
+DB_PASSWORD = os.getenv('LOCALHOST_PASSWORD')
 redacted_print_std = None
 redacted_print_err = None
 user = None
